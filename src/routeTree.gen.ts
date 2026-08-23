@@ -14,6 +14,8 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedAgentsRouteImport } from './routes/_authenticated/agents'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedChatAgentIdRouteImport } from './routes/_authenticated/chat.$agentId'
+import { Route as AuthenticatedTrainAgentIdRouteImport } from './routes/_authenticated/train.$agentId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -39,18 +41,34 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedChatAgentIdRoute =
+  AuthenticatedChatAgentIdRouteImport.update({
+    id: '/chat/$agentId',
+    path: '/chat/$agentId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedTrainAgentIdRoute =
+  AuthenticatedTrainAgentIdRouteImport.update({
+    id: '/train/$agentId',
+    path: '/train/$agentId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/agents': typeof AuthenticatedAgentsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/chat/$agentId': typeof AuthenticatedChatAgentIdRoute
+  '/train/$agentId': typeof AuthenticatedTrainAgentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/agents': typeof AuthenticatedAgentsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/chat/$agentId': typeof AuthenticatedChatAgentIdRoute
+  '/train/$agentId': typeof AuthenticatedTrainAgentIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,12 +77,26 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/agents': typeof AuthenticatedAgentsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/chat/$agentId': typeof AuthenticatedChatAgentIdRoute
+  '/_authenticated/train/$agentId': typeof AuthenticatedTrainAgentIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/agents' | '/onboarding'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/agents'
+    | '/onboarding'
+    | '/chat/$agentId'
+    | '/train/$agentId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/agents' | '/onboarding'
+  to:
+    | '/'
+    | '/auth'
+    | '/agents'
+    | '/onboarding'
+    | '/chat/$agentId'
+    | '/train/$agentId'
   id:
     | '__root__'
     | '/'
@@ -72,6 +104,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/agents'
     | '/_authenticated/onboarding'
+    | '/_authenticated/chat/$agentId'
+    | '/_authenticated/train/$agentId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -117,17 +151,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/chat/$agentId': {
+      id: '/_authenticated/chat/$agentId'
+      path: '/chat/$agentId'
+      fullPath: '/chat/$agentId'
+      preLoaderRoute: typeof AuthenticatedChatAgentIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/train/$agentId': {
+      id: '/_authenticated/train/$agentId'
+      path: '/train/$agentId'
+      fullPath: '/train/$agentId'
+      preLoaderRoute: typeof AuthenticatedTrainAgentIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAgentsRoute: typeof AuthenticatedAgentsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedChatAgentIdRoute: typeof AuthenticatedChatAgentIdRoute
+  AuthenticatedTrainAgentIdRoute: typeof AuthenticatedTrainAgentIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAgentsRoute: AuthenticatedAgentsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedChatAgentIdRoute: AuthenticatedChatAgentIdRoute,
+  AuthenticatedTrainAgentIdRoute: AuthenticatedTrainAgentIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

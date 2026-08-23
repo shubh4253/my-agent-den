@@ -1,24 +1,65 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "My Persona AI — Companions who actually know you" },
+      {
+        name: "description",
+        content:
+          "Build your own circle of AI companions: best friend, study guide, mother, father, sister or mentor — each trained on your personal memory manual.",
+      },
+      { property: "og:title", content: "My Persona AI — Companions who actually know you" },
+      {
+        property: "og:description",
+        content: "Warm, emoji-friendly AI companions trained on your own life manual.",
+      },
+    ],
+  }),
+  component: Landing,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Landing() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-between px-6 py-10">
+      <div>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">My Persona AI</p>
+        <h1 className="mt-4 text-4xl leading-tight font-semibold text-balance">
+          A little circle of people who really get you 💛
+        </h1>
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+          Pick a role — best friend, study guide, mum, dad, sister, mentor — teach them your world,
+          and chat any time.
+        </p>
+
+        <div className="mt-8 grid grid-cols-3 gap-3">
+          {[
+            { e: "🐣", l: "Best Friend" },
+            { e: "🦉", l: "Study Guide" },
+            { e: "🐰", l: "Mother" },
+            { e: "🐻‍❄️", l: "Father" },
+            { e: "🦊", l: "Sister" },
+            { e: "🦄", l: "Mentor" },
+          ].map((r) => (
+            <div key={r.l} className="surface-card flex flex-col items-center gap-1 px-2 py-4">
+              <span className="text-2xl">{r.e}</span>
+              <span className="text-[11px] font-semibold text-muted-foreground">{r.l}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-10">
+        <Link
+          to="/auth"
+          className="gradient-primary flex w-full items-center justify-center rounded-full py-4 text-base font-bold text-primary-foreground shadow-[var(--shadow-lift)]"
+        >
+          Get started ✨
+        </Link>
+        <p className="mt-3 text-center text-xs text-muted-foreground">
+          Private by design — only you can see your memories.
+        </p>
+      </div>
+    </main>
   );
 }

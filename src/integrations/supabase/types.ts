@@ -14,7 +14,172 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      agent_memories: {
+        Row: {
+          agent_id: string
+          communication_style: string | null
+          created_at: string
+          dark_days_protocol: string | null
+          extra_notes: string | null
+          financial_stance: string | null
+          future_vision: string | null
+          guilty_pleasures: string | null
+          health_notes: string | null
+          id: string
+          insecurities: string | null
+          love_language: string | null
+          non_negotiables: string | null
+          origin_story: string | null
+          pet_peeves: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_id: string
+          communication_style?: string | null
+          created_at?: string
+          dark_days_protocol?: string | null
+          extra_notes?: string | null
+          financial_stance?: string | null
+          future_vision?: string | null
+          guilty_pleasures?: string | null
+          health_notes?: string | null
+          id?: string
+          insecurities?: string | null
+          love_language?: string | null
+          non_negotiables?: string | null
+          origin_story?: string | null
+          pet_peeves?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string
+          communication_style?: string | null
+          created_at?: string
+          dark_days_protocol?: string | null
+          extra_notes?: string | null
+          financial_stance?: string | null
+          future_vision?: string | null
+          guilty_pleasures?: string | null
+          health_notes?: string | null
+          id?: string
+          insecurities?: string | null
+          love_language?: string | null
+          non_negotiables?: string | null
+          origin_story?: string | null
+          pet_peeves?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_memories_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: true
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agents: {
+        Row: {
+          created_at: string
+          custom_description: string | null
+          emoji: string
+          gender: string | null
+          id: string
+          name: string
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          custom_description?: string | null
+          emoji?: string
+          gender?: string | null
+          id?: string
+          name: string
+          role: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          custom_description?: string | null
+          emoji?: string
+          gender?: string | null
+          id?: string
+          name?: string
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          agent_id: string
+          chips: Json | null
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          agent_id: string
+          chips?: Json | null
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string
+          chips?: Json | null
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          onboarded: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+          onboarded?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          onboarded?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

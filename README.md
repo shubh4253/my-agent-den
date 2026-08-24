@@ -94,3 +94,17 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+### Running the cloned repo
+
+1. Copy `.env.example` to `.env` and fill in the values (the app reads them at
+   startup; `LOVABLE_API_KEY` is only needed for AI chat replies).
+2. `npm install`
+3. `npm run dev` — the app starts on http://localhost:8080
+4. `npm run build && npm run preview` for a production check.
+
+Note on routing: this app uses TanStack Start with server-side rendering, so
+deep links like `/agents` work on refresh. Do **not** swap in `react-router-dom`
+or `HashRouter` — that breaks the build. If a static host (e.g. GitHub Pages)
+returns 404 on refresh, that's the host lacking SSR/SPA fallback, not the app;
+deploy to the Lovable-hosted URL or any Node/edge host instead.

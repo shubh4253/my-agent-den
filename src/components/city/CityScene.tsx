@@ -34,7 +34,7 @@ export function CityScene({
   return (
     <section id={id} ref={ref} className="tour-scene px-6 py-20">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 grid-floor" />
-      <div className="pointer-events-none absolute left-6 top-8 flex items-center gap-3">
+      <div className="pointer-events-none absolute left-6 top-20 flex items-center gap-3">
         <span className="label-mono">
           {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
         </span>

@@ -99,11 +99,12 @@ function AgentsPage() {
   );
 
   return (
-    <main className="mx-auto max-w-2xl px-5 pb-16 pt-8">
-      <header className="flex items-start justify-between gap-3">
+    <main className="relative mx-auto max-w-2xl px-5 pb-16 pt-8">
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 h-1/2 grid-floor" />
+      <header className="relative flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm text-muted-foreground">Hi {displayName || "friend"} 👋</p>
-          <h1 className="text-2xl font-semibold">Who do you want to talk to?</h1>
+          <p className="label-mono">console · resident {displayName || "friend"}</p>
+          <h1 className="mt-1 text-3xl font-semibold">Who do you want to talk to?</h1>
         </div>
         <button
           onClick={async () => {
@@ -116,11 +117,15 @@ function AgentsPage() {
         </button>
       </header>
 
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="relative mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {cards.map(({ role, gender, label }) => {
           const key = role.key + (gender ?? "");
           return (
-            <article key={key} className="surface-card flex flex-col p-5">
+            <article
+              key={key}
+              className="glass-panel relative flex flex-col overflow-hidden p-5 transition duration-300 hover:-translate-y-1 hover:neon-edge"
+            >
+              <span className="animate-scan pointer-events-none absolute inset-x-0 h-20 bg-gradient-to-b from-transparent via-primary/10 to-transparent" />
               <div className="text-4xl">{emojiFor(role.key, gender)}</div>
               <h2 className="mt-2 text-lg font-semibold">{label}</h2>
               <p className="mt-0.5 text-sm text-muted-foreground">{role.tagline}</p>

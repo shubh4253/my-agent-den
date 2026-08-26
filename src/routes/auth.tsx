@@ -55,7 +55,7 @@ function AuthPage() {
 
   return (
     <main className="relative mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-10">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 grid-floor" />
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 h-1/2 grid-floor" />
       <div className="glass-panel relative p-6">
         <p className="label-mono">arrival gate · identity check</p>
         <h1 className="mt-3 text-3xl font-semibold">

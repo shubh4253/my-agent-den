@@ -54,16 +54,17 @@ function AuthPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-10">
-      <div className="surface-card p-6">
-        <div className="text-4xl">🌷</div>
-        <h1 className="mt-3 text-2xl font-semibold">
-          {mode === "signup" ? "Create your account" : "Welcome back"}
+    <main className="relative mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-10">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 grid-floor" />
+      <div className="glass-panel relative p-6">
+        <p className="label-mono">arrival gate · identity check</p>
+        <h1 className="mt-3 text-3xl font-semibold">
+          {mode === "signup" ? "Create your access" : "Welcome back"}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {mode === "signup"
             ? "We'll send a quick confirmation email."
-            : "Your companions have been waiting 💛"}
+            : "The city has kept your lights on."}
         </p>
 
         <form onSubmit={submit} className="mt-6 space-y-3">

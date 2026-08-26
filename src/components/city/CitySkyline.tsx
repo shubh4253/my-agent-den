@@ -1,6 +1,6 @@
 type LayerProps = {
   seed: number;
-  height: number;
+  height: string;
   opacity: number;
   duration: number;
   color: string;

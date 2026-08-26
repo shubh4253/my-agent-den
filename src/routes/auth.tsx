@@ -74,7 +74,7 @@ function AuthPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@email.com"
-            className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm outline-none focus:border-primary"
+            className="w-full rounded-2xl border border-input bg-background/60 px-4 py-3 text-sm outline-none transition focus:border-primary focus:shadow-[0_0_24px_-6px_var(--neon)]"
           />
           <input
             type="password"
@@ -83,14 +83,14 @@ function AuthPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm outline-none focus:border-primary"
+            className="w-full rounded-2xl border border-input bg-background/60 px-4 py-3 text-sm outline-none transition focus:border-primary focus:shadow-[0_0_24px_-6px_var(--neon)]"
           />
           <button
             type="submit"
             disabled={loading}
             className="gradient-primary w-full rounded-full py-3.5 text-sm font-bold text-primary-foreground disabled:opacity-60"
           >
-            {loading ? "One sec…" : mode === "signup" ? "Sign up ✨" : "Sign in"}
+            {loading ? "Authorising…" : mode === "signup" ? "Create access" : "Sign in"}
           </button>
         </form>
 

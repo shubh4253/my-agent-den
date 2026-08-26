@@ -106,8 +106,8 @@ export function SciFiParticles() {
     window.addEventListener("resize", resize);
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseleave", onLeave);
-    if (!reduceMotion) raf = window.requestAnimationFrame(draw);
-    else draw();
+    if (reduceMotion) for (const p of particles) { p.vx *= 0.2; p.vy *= 0.2; }
+    raf = window.requestAnimationFrame(draw);
 
     return () => {
       window.cancelAnimationFrame(raf);

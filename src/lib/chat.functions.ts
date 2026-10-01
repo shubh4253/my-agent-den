@@ -4,11 +4,11 @@ type ChatReply = { id: string; role: string; content: string; chips?: string[] |
 
 /** Strips a trailing (possibly partial) "CHIPS:" line so it never shows in the bubble. */
 export function visibleText(raw: string): string {
-  const i = raw.search(/\n?\s*C(H(I(P(S(:.*)?)?)?)?)?\s*$/i);
   const cut = raw.search(/CHIPS:/i);
   if (cut !== -1) return raw.slice(0, cut).trimEnd();
-  // Hide a partially-arrived "CHIPS" token at the very end of a line.
-  if (i !== -1 && /\n\s*C\w*$/i.test(raw.slice(Math.max(0, i - 1)))) return raw.slice(0, i).trimEnd();
+  const nl = raw.lastIndexOf("\n");
+  const last = raw.slice(nl + 1);
+  if (nl !== -1 && /^\s*C(H(I(P(S)?)?)?)?$/i.test(last)) return raw.slice(0, nl).trimEnd();
   return raw;
 }
 

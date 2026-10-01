@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loading My Persona AI</title>
+    <script>
+      const base = "/my-agent-den/";
+      const path = location.pathname.startsWith(base)
+        ? location.pathname.slice(base.length)
+        : location.pathname.replace(/^\/+/, "");
+      const route = `/${path}${location.search}${location.hash}`;
+      location.replace(`${base}?gh=${encodeURIComponent(route)}`);
+    </script>
+  </head>
+  <body></body>
+</html>

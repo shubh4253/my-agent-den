@@ -72,39 +72,38 @@ Build a multi-role personal AI agent application called "My Persona AI" using Re
 
    - Below each AI message, render 2-3 clickable quick-reply action chips that submit a follow-up answer directly to the chat input.
 
-This project was built with [Lovable](https://lovable.dev).
+## GitHub Pages deployment
 
-**Live app**: https://my-agent-den.lovable.app
+The app is a static Vite single-page site. GitHub Actions builds it and deploys
+the `dist` directory to `https://shubh4253.github.io/my-agent-den/` on pushes
+to `main`.
 
-## Build with Lovable
+1. In the repository's **Settings → Secrets and variables → Actions → Variables**, add `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
+2. In Supabase Authentication URL settings, set the site URL to
+  `https://shubh4253.github.io/my-agent-den/` and add that URL (and its
+  `/**` route pattern) to the allowed redirect URLs.
+3. Set the AI gateway key as a Supabase secret, then deploy the chat function:
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/dffd432a-7e6a-4968-b371-8e1a5efb6646).
+  ```sh
+  supabase secrets set LOVABLE_API_KEY=your-lovable-api-key
+  supabase functions deploy send-chat
+  ```
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+4. In GitHub repository settings, set **Pages → Build and deployment → Source**
+  to **GitHub Actions**.
 
-## Development
+The Supabase publishable key is embedded in the static client bundle and must
+be protected by the project's row-level security policies. Never put a service
+role key or the AI gateway key in GitHub variables or frontend build variables.
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## Local development
+
+Use Bun and copy `.env.example` to `.env` with your Supabase URL and
+publishable key, then run:
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+bun install
+bun run dev
 ```
 
-### Running the cloned repo
-
-1. Copy `.env.example` to `.env` and fill in the values (the app reads them at
-   startup; `LOVABLE_API_KEY` is only needed for AI chat replies).
-2. `npm install`
-3. `npm run dev` — the app starts on http://localhost:8080
-4. `npm run build && npm run preview` for a production check.
-
-Note on routing: this app uses TanStack Start with server-side rendering, so
-deep links like `/agents` work on refresh. Do **not** swap in `react-router-dom`
-or `HashRouter` — that breaks the build. If a static host (e.g. GitHub Pages)
-returns 404 on refresh, that's the host lacking SSR/SPA fallback, not the app;
-deploy to the Lovable-hosted URL or any Node/edge host instead.
+To check the production build, run `GITHUB_PAGES=true bun run build`.

@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { sendChatMessage } from "@/lib/chat.functions";
 import { toast } from "sonner";
@@ -22,7 +21,6 @@ type Msg = { id: string; role: string; content: string; chips?: string[] | null 
 function ChatPage() {
   const { agentId } = useParams({ from: "/_authenticated/chat/$agentId" });
   const navigate = useNavigate();
-  const send = useServerFn(sendChatMessage);
   const [agent, setAgent] = useState<{ name: string; emoji: string } | null>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
@@ -65,7 +63,7 @@ function ChatPage() {
       { id: `tmp-${Date.now()}`, role: "user", content: body, chips: [] },
     ]);
     try {
-      const reply = (await send({ data: { agentId, message: body } })) as Msg | null;
+      const reply = await sendChatMessage({ agentId, message: body });
       if (reply)
         setMessages((prev) => [
           ...prev,

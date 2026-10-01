@@ -100,42 +100,55 @@ function ChatPage() {
       : [];
 
   return (
-    <main className="mx-auto flex h-[100dvh] max-w-xl flex-col">
-      <header className="flex items-center gap-3 border-b border-border px-4 py-3">
-        <button onClick={() => navigate({ to: "/agents" })} className="text-lg">
+    <main className="film-page flex h-[100dvh] w-full flex-col px-4" data-chapter="06">
+      <header className="mx-auto flex w-full max-w-3xl items-center gap-3 border-b border-border/70 px-1 py-4">
+        <button
+          onClick={() => navigate({ to: "/agents" })}
+          aria-label="Back to companions"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-border bg-black/15 text-lg transition hover:border-primary/60"
+        >
           ←
         </button>
-        <span className="text-2xl">{agent?.emoji ?? "💬"}</span>
-        <div className="flex-1">
-          <h1 className="text-base font-semibold leading-tight">{agent?.name ?? "Companion"}</h1>
-          <p className="text-[11px] text-muted-foreground">always here for you 💛</p>
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-primary/25 bg-primary/10 text-2xl">
+          {agent?.emoji ?? "💬"}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="film-kicker">ACT VI · DIALOGUE</p>
+          <h1 className="mt-1 truncate font-display text-xl">{agent?.name ?? "Companion"}</h1>
         </div>
         <button
           onClick={() => navigate({ to: "/train/$agentId", params: { agentId } })}
-          className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold"
+          className="rounded-md border border-border bg-black/10 px-3 py-2 text-xs font-semibold transition hover:border-primary/60"
         >
           Train 🧠
         </button>
       </header>
 
-      <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+      <div className="mx-auto w-full max-w-3xl flex-1 space-y-4 overflow-y-auto px-1 py-5">
         {messages.length === 0 && (
-          <div className="surface-card p-5 text-center text-sm text-muted-foreground">
-            <div className="text-4xl">{agent?.emoji ?? "✨"}</div>
-            <p className="mt-2">Say hi — they've been waiting to hear from you 💫</p>
+          <div className="film-panel mx-auto mt-12 max-w-lg p-8 text-center text-sm text-muted-foreground">
+            <p className="film-kicker">A QUIET MOMENT BEFORE THE SCENE</p>
+            <div className="mt-5 text-5xl">{agent?.emoji ?? "✨"}</div>
+            <p className="mt-4 leading-relaxed">
+              Say hi — they've been waiting to hear from you 💫
+            </p>
           </div>
         )}
         {messages.map((m) => (
           <div
             key={m.id}
-            className={m.role === "user" ? "flex justify-end" : "flex items-end gap-2"}
+            className={m.role === "user" ? "flex justify-end" : "flex items-end gap-3"}
           >
-            {m.role !== "user" && <span className="mb-1 text-xl">{agent?.emoji ?? "✨"}</span>}
+            {m.role !== "user" && (
+              <span className="mb-1 grid h-8 w-8 shrink-0 place-items-center rounded-md border border-primary/25 bg-primary/10 text-lg">
+                {agent?.emoji ?? "✨"}
+              </span>
+            )}
             <div
               className={
                 m.role === "user"
-                  ? "gradient-primary max-w-[80%] whitespace-pre-wrap rounded-3xl rounded-br-lg px-4 py-2.5 text-sm text-primary-foreground"
-                  : "max-w-[80%] whitespace-pre-wrap rounded-3xl rounded-bl-lg bg-secondary px-4 py-2.5 text-sm"
+                  ? "film-bubble-user max-w-[86%] whitespace-pre-wrap px-4 py-3 text-sm leading-relaxed"
+                  : "film-bubble-assistant max-w-[86%] whitespace-pre-wrap px-4 py-3 text-sm leading-relaxed"
               }
             >
               {m.content}
@@ -143,18 +156,18 @@ function ChatPage() {
           </div>
         ))}
         {sending && messages[messages.length - 1]?.role === "user" && (
-          <p className="pl-9 text-xs text-muted-foreground">typing…</p>
+          <p className="film-kicker pl-11">IN THE MOMENT…</p>
         )}
         <div ref={endRef} />
       </div>
 
       {lastChips.length > 0 && !sending && (
-        <div className="flex flex-wrap gap-2 px-4 pb-2">
+        <div className="mx-auto flex w-full max-w-3xl flex-wrap gap-2 px-1 pb-3">
           {lastChips.map((c) => (
             <button
               key={c}
               onClick={() => submit(c)}
-              className="rounded-full border border-primary/40 bg-secondary px-3 py-1.5 text-xs font-semibold"
+              className="rounded-md border border-primary/35 bg-secondary/80 px-3 py-2 text-xs font-semibold transition hover:border-primary/70 hover:bg-secondary"
             >
               {c}
             </button>
@@ -167,18 +180,18 @@ function ChatPage() {
           e.preventDefault();
           submit(input);
         }}
-        className="flex items-center gap-2 border-t border-border px-4 py-3"
+        className="mx-auto mb-4 flex w-full max-w-3xl items-center gap-2 rounded-md border border-border bg-black/20 p-2 shadow-[var(--shadow-soft)]"
       >
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message…"
-          className="flex-1 rounded-full border border-input bg-background px-4 py-3 text-sm outline-none focus:border-primary"
+          className="min-w-0 flex-1 rounded-md border border-transparent bg-transparent px-3 py-3 text-sm outline-none focus:border-primary/40"
         />
         <button
           type="submit"
           disabled={sending}
-          className="gradient-primary rounded-full px-5 py-3 text-sm font-bold text-primary-foreground disabled:opacity-60"
+          className="gradient-primary rounded-md px-5 py-3 text-sm font-bold text-primary-foreground disabled:opacity-60"
         >
           Send
         </button>

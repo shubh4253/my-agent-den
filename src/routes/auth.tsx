@@ -54,14 +54,16 @@ function AuthPage() {
   }
 
   return (
-    <main className="relative mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-10">
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 h-1/2 grid-floor" />
-      <div className="glass-panel relative p-6">
-        <p className="label-mono">arrival gate · identity check</p>
-        <h1 className="mt-3 text-3xl font-semibold">
+    <main
+      className="film-page flex min-h-screen flex-col justify-center px-6 py-10"
+      data-chapter="02"
+    >
+      <div className="film-panel mx-auto w-full max-w-md p-6 sm:p-9">
+        <p className="film-kicker">ACT II · ARRIVAL GATE</p>
+        <h1 className="film-title mt-5 text-4xl sm:text-5xl">
           {mode === "signup" ? "Create your access" : "Welcome back"}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
           {mode === "signup"
             ? "We'll send a quick confirmation email."
             : "The city has kept your lights on."}
@@ -74,7 +76,7 @@ function AuthPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@email.com"
-            className="w-full rounded-2xl border border-input bg-background/60 px-4 py-3 text-sm outline-none transition focus:border-primary focus:shadow-[0_0_24px_-6px_var(--neon)]"
+            className="w-full rounded-md border border-input bg-black/20 px-4 py-3 text-sm outline-none transition focus:border-primary focus:shadow-[0_0_24px_-6px_var(--neon)]"
           />
           <input
             type="password"
@@ -83,12 +85,12 @@ function AuthPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="w-full rounded-2xl border border-input bg-background/60 px-4 py-3 text-sm outline-none transition focus:border-primary focus:shadow-[0_0_24px_-6px_var(--neon)]"
+            className="w-full rounded-md border border-input bg-black/20 px-4 py-3 text-sm outline-none transition focus:border-primary focus:shadow-[0_0_24px_-6px_var(--neon)]"
           />
           <button
             type="submit"
             disabled={loading}
-            className="gradient-primary w-full rounded-full py-3.5 text-sm font-bold text-primary-foreground disabled:opacity-60"
+            className="gradient-primary w-full rounded-md py-3.5 text-sm font-bold text-primary-foreground disabled:opacity-60"
           >
             {loading ? "Authorising…" : mode === "signup" ? "Create access" : "Sign in"}
           </button>

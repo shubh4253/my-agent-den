@@ -53,11 +53,15 @@ function Onboarding() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-10">
-      <div className="surface-card p-6 text-center">
-        <div className="text-5xl">👋</div>
-        <h1 className="mt-3 text-2xl font-semibold">What should we call you?</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+    <main
+      className="film-page flex min-h-screen flex-col justify-center px-6 py-10"
+      data-chapter="03"
+    >
+      <div className="film-panel mx-auto w-full max-w-md p-6 text-center sm:p-9">
+        <p className="film-kicker">ACT III · FIRST INTRODUCTION</p>
+        <div className="mt-5 text-5xl">👋</div>
+        <h1 className="film-title mt-4 text-3xl sm:text-4xl">What should we call you?</h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
           Your companions will use this name every time you talk 💛
         </p>
         <form onSubmit={save} className="mt-6 space-y-3">
@@ -66,12 +70,12 @@ function Onboarding() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Your name"
-            className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-center text-sm outline-none focus:border-primary"
+            className="w-full rounded-md border border-input bg-black/20 px-4 py-3 text-center text-sm outline-none focus:border-primary"
           />
           <button
             type="submit"
             disabled={saving}
-            className="gradient-primary w-full rounded-full py-3.5 text-sm font-bold text-primary-foreground disabled:opacity-60"
+            className="gradient-primary w-full rounded-md py-3.5 text-sm font-bold text-primary-foreground disabled:opacity-60"
           >
             {saving ? "Saving…" : "Let's go ✨"}
           </button>

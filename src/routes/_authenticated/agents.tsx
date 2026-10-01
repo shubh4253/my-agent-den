@@ -89,58 +89,60 @@ function AgentsPage() {
     }
   }
 
-  const cards: { role: RoleDef; gender?: "female" | "male"; label: string }[] = ROLES.flatMap((r) =>
-    r.needsGender
-      ? [
-          { role: r, gender: "female" as const, label: "Best Friend (she)" },
-          { role: r, gender: "male" as const, label: "Best Friend (he)" },
-        ]
-      : [{ role: r, label: r.label }],
+  const cards: { role: RoleDef; gender?: "female" | "male"; label: string }[] = ROLES.flatMap(
+    (r) =>
+      r.needsGender
+        ? [
+            { role: r, gender: "female" as const, label: "Best Friend (she)" },
+            { role: r, gender: "male" as const, label: "Best Friend (he)" },
+          ]
+        : [{ role: r, label: r.label }],
   );
 
   return (
-    <main className="relative mx-auto max-w-2xl px-5 pb-16 pt-8">
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 h-1/2 grid-floor" />
-      <header className="relative flex items-start justify-between gap-3">
+    <main className="film-page min-h-screen w-full px-5 pb-16 pt-8" data-chapter="04">
+      <header className="mx-auto flex w-full max-w-5xl items-start justify-between gap-3">
         <div>
-          <p className="label-mono">console · resident {displayName || "friend"}</p>
-          <h1 className="mt-1 text-3xl font-semibold">Who do you want to talk to?</h1>
+          <p className="film-kicker">ACT IV · THE CAST · {displayName || "FRIEND"}</p>
+          <h1 className="film-title mt-3 text-4xl sm:text-5xl">Who enters the story?</h1>
         </div>
         <button
           onClick={async () => {
             await supabase.auth.signOut();
             navigate({ to: "/" });
           }}
-          className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground"
+          className="rounded-md border border-border bg-black/15 px-3 py-2 text-xs font-semibold text-muted-foreground transition hover:border-primary/60 hover:text-foreground"
         >
           Sign out
         </button>
       </header>
 
-      <div className="relative mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {cards.map(({ role, gender, label }) => {
+      <div className="mx-auto mt-8 grid w-full max-w-5xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {cards.map(({ role, gender, label }, index) => {
           const key = role.key + (gender ?? "");
           return (
-            <article
-              key={key}
-              className="glass-panel relative flex flex-col overflow-hidden p-5 transition duration-300 hover:-translate-y-1 hover:neon-edge"
-            >
-              <span className="animate-scan pointer-events-none absolute inset-x-0 h-20 bg-gradient-to-b from-transparent via-primary/10 to-transparent" />
+            <article key={key} className="cast-card relative flex flex-col overflow-hidden p-5">
+              <div className="mb-4 flex items-center justify-between border-b border-border/70 pb-3">
+                <span className="film-kicker">TAKE {String(index + 1).padStart(2, "0")}</span>
+                <span aria-hidden="true" className="text-xs text-accent">
+                  ✦
+                </span>
+              </div>
               <div className="text-4xl">{emojiFor(role.key, gender)}</div>
-              <h2 className="mt-2 text-lg font-semibold">{label}</h2>
-              <p className="mt-0.5 text-sm text-muted-foreground">{role.tagline}</p>
-              <div className="mt-4 flex gap-2">
+              <h2 className="mt-3 font-display text-xl">{label}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">{role.tagline}</p>
+              <div className="mt-auto flex gap-2 pt-5">
                 <button
                   disabled={busy === key}
                   onClick={() => go(role, "train", gender)}
-                  className="flex-1 rounded-full border border-primary/40 bg-secondary px-3 py-2.5 text-xs font-bold text-foreground disabled:opacity-60"
+                  className="flex-1 rounded-md border border-border bg-black/10 px-3 py-2.5 text-xs font-semibold text-foreground transition hover:border-primary/60 disabled:opacity-60"
                 >
                   Train Agent 🧠
                 </button>
                 <button
                   disabled={busy === key}
                   onClick={() => go(role, "chat", gender)}
-                  className="gradient-primary flex-1 rounded-full px-3 py-2.5 text-xs font-bold text-primary-foreground disabled:opacity-60"
+                  className="gradient-primary flex-1 rounded-md px-3 py-2.5 text-xs font-bold text-primary-foreground disabled:opacity-60"
                 >
                   Start Chat 💬
                 </button>
@@ -150,12 +152,12 @@ function AgentsPage() {
         })}
       </div>
 
-      <p className="mt-8 text-center text-xs text-muted-foreground">
-        Tip: the more you add in the Memory Vault, the more they sound like they truly know you.{" "}
-        <Link to="/" className="font-semibold underline">
+      <div className="mx-auto mt-8 flex w-full max-w-5xl items-center justify-between border-t border-border/60 pt-4 text-xs text-muted-foreground">
+        <span className="film-kicker">EVERY STORY BEGINS HERE</span>
+        <Link to="/" className="transition hover:text-primary">
           About
         </Link>
-      </p>
+      </div>
     </main>
   );
 }

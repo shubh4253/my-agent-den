@@ -32,9 +32,14 @@ export function CityScene({
   }, []);
 
   return (
-    <section id={id} ref={ref} className="tour-scene px-6 py-20">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 grid-floor" />
-      <div className="pointer-events-none absolute left-6 top-20 flex items-center gap-3">
+    <section
+      id={id}
+      ref={ref}
+      data-scene={String(index + 1).padStart(2, "0")}
+      className="tour-scene film-scene px-6 py-20"
+    >
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/2 grid-floor" />
+      <div className="pointer-events-none absolute left-6 top-20 z-10 flex items-center gap-3">
         <span className="label-mono">
           {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
         </span>
@@ -43,7 +48,7 @@ export function CityScene({
       </div>
 
       <div
-        className={`relative mx-auto w-full max-w-3xl scene-reveal ${visible ? "scene-visible" : ""}`}
+        className={`relative z-10 mx-auto w-full max-w-3xl scene-reveal ${visible ? "scene-visible" : ""}`}
       >
         {children}
       </div>
@@ -51,7 +56,7 @@ export function CityScene({
       {onNext && (
         <button
           onClick={onNext}
-          className="absolute inset-x-0 bottom-8 mx-auto flex w-fit flex-col items-center gap-1.5 text-primary"
+          className="absolute inset-x-0 bottom-8 z-10 mx-auto flex w-fit flex-col items-center gap-1.5 text-primary"
           aria-label="Go to next scene"
         >
           <span className="label-mono">continue</span>

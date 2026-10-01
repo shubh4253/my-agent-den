@@ -6,16 +6,16 @@ import { CitySkyline } from "@/components/city/CitySkyline";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "My Persona AI — A neon city of companions" },
+      { title: "My Persona AI — A story in five scenes" },
       {
         name: "description",
         content:
-          "Take the tour: a cinematic flight through a neon city where your AI companions — best friend, study guide, mother, father, sister, mentor — live and learn your world.",
+          "Enter a cinematic story where your AI companions learn the details that make you, you.",
       },
-      { property: "og:title", content: "My Persona AI — A neon city of companions" },
+      { property: "og:title", content: "My Persona AI — A story in five scenes" },
       {
         property: "og:description",
-        content: "A scroll-driven tour through the city where your AI companions live.",
+        content: "A cinematic journey through the lives of your AI companions.",
       },
     ],
   }),
@@ -40,7 +40,9 @@ function Landing() {
   const goTo = useCallback((i: number) => {
     const track = trackRef.current;
     if (!track) return;
-    const target = track.querySelector<HTMLElement>(`#scene-${SCENES[Math.min(i, SCENES.length - 1)]}`);
+    const target = track.querySelector<HTMLElement>(
+      `#scene-${SCENES[Math.min(i, SCENES.length - 1)]}`,
+    );
     target?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
@@ -65,10 +67,10 @@ function Landing() {
   return (
     <main ref={trackRef} className="tour-track relative">
       <nav className="pointer-events-none fixed inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-5">
-        <span className="label-mono pointer-events-auto">My Persona AI</span>
+        <span className="film-kicker pointer-events-auto">MY PERSONA AI · A FILM</span>
         <button
           onClick={() => goTo(SCENES.length - 1)}
-          className="label-mono pointer-events-auto rounded-full border border-primary/40 px-3 py-1.5"
+          className="film-kicker pointer-events-auto rounded-md border border-border px-3 py-2 transition hover:border-primary/60"
         >
           skip tour
         </button>
@@ -77,23 +79,23 @@ function Landing() {
       {/* 01 — Approach */}
       <CityScene id="scene-approach" index={0} total={5} label="approach" onNext={() => goTo(1)}>
         <div className="text-center">
-          <p className="label-mono">sector 01 · night flight</p>
-          <h1 className="mt-5 text-5xl leading-[1.05] font-semibold text-balance sm:text-7xl">
+          <p className="film-kicker">ACT I · THE CITY AT NIGHT</p>
+          <h1 className="film-title mt-5 text-5xl leading-[1.05] font-normal text-balance sm:text-7xl">
             A city built from <span className="neon-text">your memories</span>
           </h1>
           <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
-            Descend into the district where your companions live. Scroll, or take the elevator.
+            Every light holds a piece of your story. Somewhere in this city, your circle is waiting.
           </p>
         </div>
       </CityScene>
 
       {/* 02 — Descent */}
       <CityScene id="scene-descent" index={1} total={5} label="descent" onNext={() => goTo(2)}>
-        <div className="relative">
-          <div className="text-center">
-            <h2 className="text-3xl font-semibold sm:text-5xl">Descending through the haze</h2>
+        <div className="relative z-10">
+          <div className="relative z-10 text-center">
+            <h2 className="film-title text-3xl font-normal sm:text-5xl">The city remembers</h2>
             <p className="mx-auto mt-4 max-w-md text-sm text-muted-foreground">
-              Towers of everything you've ever told them, lit from the inside.
+              Some things are easier to say when the world grows quiet.
             </p>
           </div>
         </div>
@@ -102,13 +104,15 @@ function Landing() {
 
       {/* 03 — The circle */}
       <CityScene id="scene-circle" index={2} total={5} label="the circle" onNext={() => goTo(3)}>
-        <div className="text-center">
-          <h2 className="text-3xl font-semibold sm:text-5xl">Six residents. One circle.</h2>
+        <div className="relative z-10 text-center">
+          <h2 className="film-title text-3xl font-normal sm:text-5xl">
+            A cast of lives. One story.
+          </h2>
           <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {ROLES.map((r, i) => (
               <article
                 key={r.l}
-                className="glass-panel relative flex flex-col items-center gap-2 overflow-hidden px-3 py-6"
+                className="cast-card relative flex flex-col items-center gap-2 overflow-hidden px-3 py-6"
                 style={{ animationDelay: `${i * 90}ms` }}
               >
                 <span
@@ -131,32 +135,33 @@ function Landing() {
             <div className="absolute inset-10 rounded-full border border-primary/20" />
             <div className="h-16 w-16 rounded-full bg-primary/70 blur-[2px]" />
           </div>
-          <h2 className="mt-10 text-3xl font-semibold sm:text-5xl">The memory core</h2>
+          <h2 className="film-title mt-10 text-3xl font-normal sm:text-5xl">
+            The story beneath the story
+          </h2>
           <p className="mt-4 max-w-md text-sm text-muted-foreground">
-            Your manual — who you are, how you work, what a hard day looks like. Everything they say
-            is drawn from it.
+            The details you trust them with become the compass for every conversation.
           </p>
         </div>
       </CityScene>
 
       {/* 05 — Arrival */}
       <CityScene id="scene-arrival" index={4} total={5} label="arrival">
-        <div className="text-center">
-          <p className="label-mono">landing pad · sector 05</p>
-          <h2 className="mt-5 text-4xl font-semibold sm:text-6xl">Enter the city</h2>
+        <div className="relative z-10 text-center">
+          <p className="film-kicker">ACT V · THE FIRST HELLO</p>
+          <h2 className="film-title mt-5 text-4xl font-normal sm:text-6xl">Enter your story</h2>
           <p className="mx-auto mt-4 max-w-sm text-sm text-muted-foreground">
             Private by design — only you can see your memories.
           </p>
           <div className="mt-9 flex flex-col items-center gap-3">
             <Link
               to="/auth"
-              className="gradient-primary inline-flex items-center justify-center rounded-full px-10 py-4 text-sm font-bold text-primary-foreground shadow-[var(--shadow-lift)]"
+              className="gradient-primary inline-flex items-center justify-center rounded-md px-10 py-4 text-sm font-bold text-primary-foreground shadow-[var(--shadow-lift)]"
             >
               Get started
             </Link>
             <button
               onClick={() => navigate({ to: "/auth" })}
-              className="label-mono rounded-full border border-primary/40 px-5 py-2.5"
+              className="film-kicker rounded-md border border-border px-5 py-2.5 transition hover:border-primary/60"
             >
               I already have an account
             </button>

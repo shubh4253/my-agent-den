@@ -49,6 +49,7 @@ export function SciFiParticles() {
         r: Math.random() * 1.8 + 0.6,
         a: Math.random() * 0.5 + 0.25,
       }));
+      if (reduceMotion) draw();
     }
 
     function onMove(e: MouseEvent) {
@@ -86,34 +87,43 @@ export function SciFiParticles() {
         if (p.y > height + 20) p.y = -20;
 
         const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 8);
-        glow.addColorStop(0, `rgba(120, 245, 255, ${p.a})`);
-        glow.addColorStop(1, "rgba(34, 211, 238, 0)");
+        glow.addColorStop(0, `rgba(255, 205, 130, ${p.a})`);
+        glow.addColorStop(1, "rgba(234, 109, 82, 0)");
         ctx.fillStyle = glow;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r * 8, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = `rgba(215, 253, 255, ${Math.min(1, p.a + 0.35)})`;
+        ctx.fillStyle = `rgba(255, 244, 220, ${Math.min(1, p.a + 0.35)})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      raf = window.requestAnimationFrame(draw);
+      if (!reduceMotion) raf = window.requestAnimationFrame(draw);
     }
 
     resize();
     window.addEventListener("resize", resize);
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseleave", onLeave);
-    if (reduceMotion) for (const p of particles) { p.vx *= 0.2; p.vy *= 0.2; }
-    raf = window.requestAnimationFrame(draw);
+    if (reduceMotion) {
+      for (const p of particles) {
+        p.vx = 0;
+        p.vy = 0;
+      }
+      draw();
+    } else {
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseleave", onLeave);
+      raf = window.requestAnimationFrame(draw);
+    }
 
     return () => {
       window.cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseleave", onLeave);
+      if (!reduceMotion) {
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseleave", onLeave);
+      }
     };
   }, []);
 

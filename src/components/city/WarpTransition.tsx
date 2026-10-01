@@ -19,7 +19,7 @@ export function WarpTransition() {
     <div
       key={key}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-50"
+      className="warp-overlay pointer-events-none fixed inset-0 z-50"
       style={{ animation: "warp-flash 650ms ease-out forwards" }}
     >
       <div className="absolute inset-0 bg-background/70 backdrop-blur-sm" />

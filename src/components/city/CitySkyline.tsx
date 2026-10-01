@@ -27,7 +27,7 @@ function Layer({ seed, height, opacity, duration, color }: LayerProps) {
   const { out, width } = buildings(seed);
   return (
     <div
-      className="pointer-events-none absolute bottom-0 left-0 flex"
+      className="city-skyline-layer pointer-events-none absolute bottom-0 left-0 flex"
       style={{
         height,
         opacity,
@@ -53,7 +53,7 @@ function Layer({ seed, height, opacity, duration, color }: LayerProps) {
                   y={200 - b.h + 10 + r * 24}
                   width={b.w * 0.5}
                   height={4}
-                  fill="oklch(0.86 0.12 205)"
+                  fill="oklch(0.83 0.15 70)"
                   opacity={0.45}
                 />
               ))}
@@ -67,10 +67,10 @@ function Layer({ seed, height, opacity, duration, color }: LayerProps) {
 
 export function CitySkyline() {
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[52vh] overflow-hidden">
-      <Layer seed={7} height="60%" opacity={0.35} duration={120} color="oklch(0.24 0.05 255)" />
-      <Layer seed={41} height="46%" opacity={0.55} duration={80} color="oklch(0.19 0.05 255)" />
-      <Layer seed={93} height="32%" opacity={0.85} duration={52} color="oklch(0.14 0.04 258)" />
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[52vh] overflow-hidden">
+      <Layer seed={7} height="60%" opacity={0.35} duration={120} color="oklch(0.25 0.04 158)" />
+      <Layer seed={41} height="46%" opacity={0.55} duration={80} color="oklch(0.19 0.03 163)" />
+      <Layer seed={93} height="32%" opacity={0.85} duration={52} color="oklch(0.13 0.025 165)" />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
     </div>
   );

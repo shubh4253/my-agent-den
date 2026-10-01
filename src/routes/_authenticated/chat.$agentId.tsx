@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { sendChatMessage } from "@/lib/chat.functions";
+import { sendChatMessage, visibleText } from "@/lib/chat.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/chat/$agentId")({
@@ -62,11 +62,23 @@ function ChatPage() {
       ...prev,
       { id: `tmp-${Date.now()}`, role: "user", content: body, chips: [] },
     ]);
+    const streamId = `stream-${Date.now()}`;
     try {
-      const reply = await sendChatMessage({ agentId, message: body });
+      const reply = await sendChatMessage({ agentId, message: body }, (raw) => {
+        const text = visibleText(raw);
+        if (!text) return;
+        setMessages((prev) => {
+          const i = prev.findIndex((m) => m.id === streamId);
+          const msg = { id: streamId, role: "assistant", content: text, chips: [] };
+          if (i === -1) return [...prev, msg];
+          const next = prev.slice();
+          next[i] = msg;
+          return next;
+        });
+      });
       if (reply)
         setMessages((prev) => [
-          ...prev,
+          ...prev.filter((m) => m.id !== streamId),
           {
             id: reply.id,
             role: "assistant",
@@ -75,6 +87,7 @@ function ChatPage() {
           },
         ]);
     } catch (err) {
+      setMessages((prev) => prev.filter((m) => m.id !== streamId));
       toast.error(err instanceof Error ? err.message : "Message failed");
     } finally {
       setSending(false);
@@ -129,7 +142,9 @@ function ChatPage() {
             </div>
           </div>
         ))}
-        {sending && <p className="pl-9 text-xs text-muted-foreground">typing…</p>}
+        {sending && messages[messages.length - 1]?.role === "user" && (
+          <p className="pl-9 text-xs text-muted-foreground">typing…</p>
+        )}
         <div ref={endRef} />
       </div>
 

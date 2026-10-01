@@ -94,12 +94,20 @@ Deno.serve(async (request) => {
   const userId = authData.user.id;
 
   try {
-    const [{ data: agent }, { data: profile }, { data: memory }] = await Promise.all([
+    const [{ data: agent }, { data: profile }, { data: memory }, { data: recent }] = await Promise.all([
       supabase.from("agents").select("id, role, gender, custom_description").eq("id", agentId).eq("user_id", userId).maybeSingle(),
       supabase.from("profiles").select("display_name").eq("id", userId).maybeSingle(),
       supabase.from("agent_memories").select("*").eq("agent_id", agentId).eq("user_id", userId).maybeSingle(),
+      supabase
+        .from("messages")
+        .select("role, content")
+        .eq("agent_id", agentId)
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(20),
     ]);
     if (!agent) return response({ error: "Companion not found." }, 404);
+    const history = (recent ?? []).slice().reverse();
 
     const userName = profile?.display_name || "friend";
     const manual = Object.entries(memoryLabels)
@@ -122,65 +130,96 @@ CRITICAL RULES:
 - After your reply, output a final line exactly in this format with 2-3 short first-person quick replies the user could tap:
 CHIPS: option one || option two || option three`;
 
-    const { data: history } = await supabase
-      .from("messages")
-      .select("role, content")
-      .eq("agent_id", agentId)
-      .eq("user_id", userId)
-      .order("created_at", { ascending: true })
-      .limit(40);
-
-    const { error: userMessageError } = await supabase.from("messages").insert({
-      user_id: userId,
-      agent_id: agentId,
-      role: "user",
-      content: message,
-    });
+    const [{ error: userMessageError }, aiResponse] = await Promise.all([
+      supabase.from("messages").insert({ user_id: userId, agent_id: agentId, role: "user", content: message }),
+      fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          model: "google/gemini-3.7-flash",
+          stream: true,
+          messages: [
+            { role: "system", content: system },
+            ...history.map((item) => ({
+              role: item.role === "assistant" ? "assistant" : "user",
+              content: item.content,
+            })),
+            { role: "user", content: message },
+          ],
+        }),
+      }),
+    ]);
     if (userMessageError) throw userMessageError;
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model: "google/gemini-3.7-flash",
-        messages: [
-          { role: "system", content: system },
-          ...(history ?? []).map((item) => ({
-            role: item.role === "assistant" ? "assistant" : "user",
-            content: item.content,
-          })),
-          { role: "user", content: message },
-        ],
-      }),
-    });
-
-    if (!aiResponse.ok) {
+    if (!aiResponse.ok || !aiResponse.body) {
       if (aiResponse.status === 429) return response({ error: "Too many messages right now — try again in a moment." }, 429);
       if (aiResponse.status === 402) return response({ error: "AI credits are exhausted. Please top up to keep chatting." }, 402);
       console.error("AI gateway request failed:", aiResponse.status, await aiResponse.text());
       return response({ error: `AI error (${aiResponse.status}).` }, 502);
     }
 
-    const json = await aiResponse.json();
-    const raw = json.choices?.[0]?.message?.content?.trim() ?? "";
-    const match = raw.match(/CHIPS:\s*(.+)\s*$/i);
-    const content = match ? raw.slice(0, match.index).trim() : raw;
-    const chips = match
-      ? match[1]
-          .split("||")
-          .map((chip: string) => chip.trim().replace(/^["'-]|["']$/g, ""))
-          .filter(Boolean)
-          .slice(0, 3)
-      : [];
+    const encoder = new TextEncoder();
+    const upstream = aiResponse.body.pipeThrough(new TextDecoderStream()).getReader();
 
-    const { data: saved, error: saveError } = await supabase
-      .from("messages")
-      .insert({ user_id: userId, agent_id: agentId, role: "assistant", content, chips })
-      .select("id, role, content, chips, created_at")
-      .single();
-    if (saveError) throw saveError;
+    const stream = new ReadableStream({
+      async start(controller) {
+        const send = (obj: unknown) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
+        let raw = "";
+        let buffer = "";
+        try {
+          while (true) {
+            const { value, done } = await upstream.read();
+            if (done) break;
+            buffer += value;
+            let idx;
+            while ((idx = buffer.indexOf("\n")) !== -1) {
+              const line = buffer.slice(0, idx).replace(/\r$/, "");
+              buffer = buffer.slice(idx + 1);
+              if (!line.startsWith("data:")) continue;
+              const data = line.slice(5).trim();
+              if (!data || data === "[DONE]") continue;
+              try {
+                const delta = JSON.parse(data).choices?.[0]?.delta?.content;
+                if (typeof delta === "string" && delta) {
+                  raw += delta;
+                  send({ type: "delta", text: delta });
+                }
+              } catch {
+                // partial/non-JSON line; ignore
+              }
+            }
+          }
 
-    return response(saved);
+          raw = raw.trim();
+          const match = raw.match(/CHIPS:\s*(.+)\s*$/i);
+          const content = match ? raw.slice(0, match.index).trim() : raw;
+          const chips = match
+            ? match[1]
+                .split("||")
+                .map((chip: string) => chip.trim().replace(/^["'-]|["']$/g, ""))
+                .filter(Boolean)
+                .slice(0, 3)
+            : [];
+
+          const { data: saved, error: saveError } = await supabase
+            .from("messages")
+            .insert({ user_id: userId, agent_id: agentId, role: "assistant", content, chips })
+            .select("id, role, content, chips, created_at")
+            .single();
+          if (saveError) throw saveError;
+          send({ type: "done", message: saved });
+        } catch (error) {
+          console.error("Chat stream failed:", error);
+          send({ type: "error", error: "Unable to send your message right now." });
+        } finally {
+          controller.close();
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: { ...corsHeaders, "Content-Type": "text/event-stream", "Cache-Control": "no-cache" },
+    });
   } catch (error) {
     console.error("Chat function failed:", error);
     return response({ error: "Unable to send your message right now." }, 500);
